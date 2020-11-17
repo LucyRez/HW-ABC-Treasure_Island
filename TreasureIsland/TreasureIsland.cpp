@@ -19,11 +19,13 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <cstdio>
 
 int indexTreasure;
 int numberGroups;
 int width;
 int height;
+std::string input;
 
 std::mutex lock;
 
@@ -32,13 +34,38 @@ std::vector<int> piratesInGroups;
 std::vector<int> numsOfParts;
 std::vector<std::thread> threads;
 
+int checkInput(std::string input) {
+	try {
+		int val = atoi(input.c_str());
+		if (val <=0)
+		{
+			return 0;
+		}
+		return val;
+	}
+	catch (const std::exception& e) {
+		return 0;
+	}
 
+}
+
+int repeatInput(int value) {
+	std::string str;
+	while (value == 0) {
+		std::cout << "Вы ввели некорректное значение, оно должно быть больше 0. Повторите ввод, пожалуйста. \n";
+		std::cin >> str;
+		value = checkInput(str);
+	}
+	return value;
+}
 
 void start() {
 	std::cout << "Введите ширину острова (целое число > 0): ";
-	std::cin >> width;
+	std::cin >> input;
+	width = repeatInput(checkInput(input));
 	std::cout << "Введите высоту острова (целое число > 0): ";
-	std::cin >> height;
+	std::cin >> input;
+	height = repeatInput(checkInput(input));
 
 	for (int i = 0; i < width * height; i++)
 	{
@@ -81,10 +108,12 @@ void createCrew() {
 	int numPirates;
 	int numGroup = 0;
 	int numFree;
+	std::cout << "\n \n";
 	std::cout << "Введите количество пиратов в команде: ";
-	std::cin >> numPirates;
+	std::cin >> input;
+	numPirates = repeatInput(checkInput(input));
 	numFree = numPirates;
-
+	std::cout << "\n \n";
 	std::cout << "Давайте разделим остров на участки и сформируем группы пиратов. \n";
 	while (numFree != 0) {
 		int numInGroup;
@@ -98,23 +127,25 @@ void createCrew() {
 		std::cout << "Формируем группу №" << (numGroup + 1) << "\n";
 		std::cout << "Количество нераспределённых пиратов: " << numFree << "\n";
 		std::cout << "Введите количество человек в этой группе: ";
-		std::cin >> numInGroup;
-
+		std::cin >> input;
+		numInGroup = repeatInput(checkInput(input));
+		
 		while (numInGroup > numFree) {
 			std::cout << "Вы ввели слишком большое число, количество свободных пиратов - " << numFree << "\n";
 			std::cout << "Попробуйте ещё раз: ";
-			std::cin >> numInGroup;
+			std::cin >> input;
+			numInGroup = repeatInput(checkInput(input));
 		}
 
 		numFree -= numInGroup;
 		piratesInGroups.push_back(numInGroup);
 		numGroup++;
-
+		std::cout << "\n \n";
 	}
 
 	std::cout << "Все группы сформированы, осталось разделить территорию между ними. \n";
 	numberGroups = numGroup;
-
+	std::cout << "\n \n";
 	
 }
 
@@ -125,20 +156,22 @@ void partCrew() {
 	{
 		std::cout << "Не распределено ещё " << unsearched << " квадрат. м. острова. \n";
 		std::cout << "Назначьте группе №" << (i + 1) << " размер участка острова (1 целое число): ";
-		std::cin >> area;
+		std::cin >> input;
+		area = repeatInput(checkInput(input));
 		while (area > unsearched || area > (width * height) / numberGroups) {
 			std::cout << "Вы ввели слишком большое число. Замечание: группе нельзя назначить больше " << (width * height) / numberGroups << " кв. м. \n";
 			std::cout << "Попробуйте ещё раз: ";
-			std::cin >> area;
+			std::cin >> input;
+			area = repeatInput(checkInput(input));
 		}
 		numsOfParts.push_back(area);
 		unsearched -= area;
-
+		std::cout << "\n \n";
 	}
 	std::cout << "Последняя группа берёт на себя всю оставшуюся территорию острова - " << unsearched << " кв. м. \n";
 	numsOfParts.push_back(unsearched);
 	unsearched = 0;
-
+	std::cout << "\n \n";
 
 }
 
@@ -192,7 +225,9 @@ int main()
 		thr.join();
 		
 	}
-	
+	std::string last;
+	std::cin >> last;
+	std::getchar();
 }
 
 
