@@ -28,6 +28,7 @@ int height; // Высота острова.
 std::string input; // Строка для хранения пользовательского ввода.
 
 std::mutex lock;
+std::vector<std::thread> threads;
 
 std::vector<int> island; // Ячейки массива - части острова.
 std::vector<int> piratesInGroups; // Массив, содержащий группы пиратов (кол-во в каждой группе).
@@ -43,7 +44,7 @@ int checkInput(std::string input) {
 	// Отлавливаем все исключения.
 	try {
 		int val = atoi(input.c_str());
-		if (val <=0)
+		if (val <= 0)
 		{
 			return 0;
 		}
@@ -111,20 +112,34 @@ void printIsland() {
 /// </summary>
 /// <param name="indexGroup">Индекс вернувшейся группы пиратов.</param>
 /// <param name="explored">Количество открытых ячеек.</param>
-void islandMap(int indexGroup, int explored ) {
+void islandMap(int indexGroup, int explored) {
+	std::cout << "Группа отметила исследованную зону на карте: \n";
+	//int groupExplored = explored - numsOfParts[indexGroup];
+	int index = explored;
+	int ind = 0;
+	
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			if (explored != 0)
+			if (explored!= numsOfParts[indexGroup])
 			{
-				std::cout << island[j + i * width] << " ";
+				std::cout << "*" << " ";
 				explored--;
 			}
-			
+			else if(ind != numsOfParts[indexGroup])
+			{
+				std::cout << island[j + i * width] << " ";
+				ind++;
+			}
+			else {
+				std::cout << "*" << " ";
+			}
+
 		}
 		std::cout << "\n";
 	}
+	std::cout << "\n\n";
 }
 
 /// <summary>
@@ -157,7 +172,7 @@ void createCrew() {
 		std::cout << "Введите количество человек в этой группе: ";
 		std::cin >> input;
 		numInGroup = repeatInput(checkInput(input));
-		
+
 		while (numInGroup > numFree) {
 			std::cout << "Вы ввели слишком большое число, количество свободных пиратов - " << numFree << "\n";
 			std::cout << "Попробуйте ещё раз: ";
@@ -174,7 +189,7 @@ void createCrew() {
 	std::cout << "Все группы сформированы, осталось разделить территорию между ними. \n";
 	numberGroups = numGroup;
 	std::cout << "\n \n";
-	
+
 }
 
 /// <summary>
@@ -213,43 +228,44 @@ void partCrew() {
 /// <param name="groupsNum">Количество групп.</param>
 /// <param name="indexGroup">Номер группы.</param>
 void groupAction(int groupsNum, int indexGroup) {
-
+	bool found = false;
 	int explored = 0; // Количество исследованных ячеек острова.
-	for ( int j = 0; j < indexGroup-1; j++)
+
+	for (int j = 0; j < indexGroup - 1; j++)
 	{
 		explored += numsOfParts[j];
 	}
 
-	bool found =false; // Найден ли клад.
-	for (int i = 0; i < numsOfParts[indexGroup-1] ; i++)
+	found = false; // Найден ли клад.
+	for (int i = 0; i < numsOfParts[indexGroup - 1]; i++)
 	{
 		// Если значение ячейки острова == 1.
 		if (island[i + explored] == 1) {
 			found = true;
 		}
 	}
-	explored += numsOfParts[indexGroup-1];
-	
+	explored += numsOfParts[indexGroup - 1];
+
 	// Вывод не доступен, пока один поток не завершит вывод.
 	lock.lock();
 	std::cout << "Группа №" << indexGroup << " вернулась из поисков. \n";
 	if (found)
 	{
 		std::cout << "Она нашла сокровища! \n";
-
 	}
 	else {
 		std::cout << "Она не нашла сокровища. \n";
 	}
-	std::cout << "Обновлённая карта острова: \n";
-	islandMap(indexGroup-1, explored);
-	lock.unlock();	// Открываем доступ.
+
+	islandMap(indexGroup - 1, explored);
+	lock.unlock();
+	// Открываем доступ.
 }
 
 int main()
 {
 	srand(time(0));
-	setlocale(LC_ALL, "rus"); 
+	setlocale(LC_ALL, "rus");
 	start(); // Начало работы.
 	printIsland(); // Выводим на экран остров.
 	createCrew(); // Формируем группы пиратов.
@@ -258,9 +274,14 @@ int main()
 	// Создаём кол-во потоков, равное количеству групп.
 	for (int i = 0; i < numberGroups; i++)
 	{
-		std::thread thr(groupAction, numberGroups, i+1);
-		thr.join();
+		threads.push_back(std::thread(groupAction, numberGroups, i + 1));
 	}
+
+	for (int i = 0; i < numberGroups; i++)
+	{
+		threads.at(i).join();
+	}
+
 	// Для выхода нужно ввести что-нибудь.
 	std::string str;
 	std::cin >> str;

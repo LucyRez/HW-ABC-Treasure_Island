@@ -1,6 +1,6 @@
 ﻿  TreasureIsland.cpp
-C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(52,31): warning C4101: e: неиспользованная локальная переменная
-C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(151,12): warning C4553: "==": результат выражения не используется; вы хотели использовать "="?
-C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(186,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(251,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(53,31): warning C4101: e: неиспользованная локальная переменная
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(166,12): warning C4553: "==": результат выражения не используется; вы хотели использовать "="?
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(201,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(267,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
   TreasureIsland.vcxproj -> C:\Users\Люда\source\repos\TreasureIsland\Debug\TreasureIsland.exe
