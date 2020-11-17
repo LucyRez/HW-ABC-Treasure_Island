@@ -1,0 +1,4 @@
+﻿  TreasureIsland.cpp
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(124,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Люда\source\repos\TreasureIsland\TreasureIsland\TreasureIsland.cpp(181,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  TreasureIsland.vcxproj -> C:\Users\Люда\source\repos\TreasureIsland\Debug\TreasureIsland.exe
